@@ -11,11 +11,24 @@ function App() {
 
   useEffect(() => {
     if (username) {
-      socket = io("https://group-chat-backend-production.up.railway.app/");
+      socket = io("https://group-chat-backend-production.up.railway.app/"); // Backend URL
 
+      // Listen for chat history
+      socket.on("chat history", (chatHistory) => {
+        console.log("Received chat history:", chatHistory);
+        setMessages(
+          chatHistory.map(({ username, message }) => ({
+            senderName: username,
+            message,
+          }))
+        );
+      });
+
+      // Listen for new chat messages
       socket.on(
         "chat message",
         ({ username: senderName, message: chatMessage }) => {
+          console.log("Received chat message:", senderName, chatMessage);
           setMessages((prevMessages) => [
             ...prevMessages,
             { senderName, message: chatMessage },
@@ -86,9 +99,7 @@ function App() {
                         : "bg-gray-200 text-gray-800"
                     }`}
                   >
-                    {msg.senderName === username ? (
-                      ""
-                    ) : (
+                    {msg.senderName === username ? null : (
                       <p className="text-sm font-semibold">{msg.senderName}</p>
                     )}
                     <p>{msg.message}</p>
