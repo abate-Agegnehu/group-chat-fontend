@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     if (username) {
-      socket = io("http://localhost:30001");
+      socket = io("https://group-chat-backend-production.up.railway.app/");
 
       socket.on(
         "chat message",
